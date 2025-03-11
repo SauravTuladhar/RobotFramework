@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+            <style></style>
+        </head>
+        <body>
+            
+
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Automation Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button {
+            background: linear-gradient(135deg, #4B8BF5, #007BFF);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button:disabled {
+            background: #6C757D;
+            cursor: not-allowed;
+        }
+
+        .input-field {
+            border: 1px solid #DEE2E6;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #4B8BF5;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(75, 139, 245, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            border: 1px solid #DEE2E6;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4B8BF5;
+            color: white;
+        }
+
+        td {
+            font-size: 1rem;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .alert {
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #28a745;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header i {
+            font-size: 1.2rem;
+            color: #4B8BF5;
+        }
+    </style>
+
+
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">Zconnect Web Automation Dashboard</h1>
+        <!-- Alert Message -->
+        <div id="alertMessage" class="alert" aria-live="assertive" role="alert"></div>
+        <!-- Test Trigger Form -->
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-play-circle"></i>
+                Trigger Tests
+            </div>
+            <div class="input-group grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                    <label for="GROUP_CODE" class="w-32">Group Code <span class="text-red-500">*</span></label>
+                    <input type="text" id="GROUP_CODE" placeholder="Group Code" class="input-field flex-1" required="">
+                </div>
+
+                <div class="flex items-center">
+                    <label for="URL" class="w-32">URL <span class="text-red-500">*</span></label>
+                    <input type="text" id="URL" placeholder="URL" class="input-field flex-1" required="">
+                </div>
+
+                <div class="flex items-center">
+                    <label for="USERNAME" class="w-32">Username <span class="text-red-500">*</span></label>
+                    <input type="text" id="USERNAME" placeholder="Username" class="input-field flex-1" required="">
+                </div>
+
+                <div class="flex items-center">
+                    <label for="PASSWORD" class="w-32">Password <span class="text-red-500">*</span></label>
+                    <input type="text" id="PASSWORD" placeholder="Password" class="input-field flex-1" required="">
+                </div>
+
+                <div class="flex items-center">
+                    <label for="LOGGEDINUSER" class="w-32">Logged-in User <span class="text-red-500">*</span></label>
+                    <input type="text" id="LOGGEDINUSER" placeholder="Logged-in User" class="input-field flex-1" required="">
+                </div>
+
+                <div class="flex items-center">
+                    <label for="TAG" class="w-32">Tag <span class="text-red-500">*</span></label>
+                    <input type="text" id="TAG" placeholder="Tag" class="input-field flex-1" required="">
+                </div>
+            </div>
+            <!-- Run All Tests Checkbox -->
+            <div class="flex items-center mt-4">
+                <input type="checkbox" id="runAllTests" class="mr-2" onclick="toggleMandatoryFields()">
+                <label for="runAllTests" class="text-sm text-gray-600">Run All Tests</label>
+            </div>
+            <p class="text-sm text-center text-gray-600 mt-2">
+                <i><small>Note: Leave fields empty for default tests.</small></i>
+            </p>
+            <button id="runTestsButton" class="button w-full mt-4" disabled="">
+               <i class="fas fa-play"></i> Run Tests
+            </button>
+        </div>
+        <!-- Test Summary -->
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-chart-bar"></i>
+                Test Summary
+            </div>
+            <div class="table-container">
+                <table id="testSummaryTable">
+                    <thead>
+                        <tr>
+                            <th>Group User</th>
+                            <th>Total</th>
+                            <th>Passed</th>
+                            <th>Failed</th>
+                            <th>Skipped</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="text-center">No data available</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Artifact Links -->
+        <div class="card">
+            <div class="section-header">
+                <i class="fas fa-download"></i>
+                Download Reports
+            </div>
+            <table id="artifactLinksTable">
+                <thead>
+                    <tr>
+                        <th>Report Name</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" class="text-center">No reports available</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Fetch Results Button -->
+        <button id="fetchResultsButton" class="button w-full mt-4">
+            <i class="fas fa-sync"></i> Fetch Results
+         </button>
+    </div>
+
+    <script>
+        const GITHUB_API_BASE = "https://api.github.com";
+         const OWNER = "zakipoint";
+         const REPO = "zconnect-web-automation";
+         const BRANCH = "demoUsers";
+         const GITHUB_TOKEN = "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"; // Secure token
+
+         // Toggle mandatory fields based on "Run All Tests" checkbox
+         function toggleMandatoryFields() {
+            const isChecked = document.getElementById('runAllTests').checked;
+            const fields = document.querySelectorAll('.input-field');
+            fields.forEach(field => {
+               field.required = !isChecked;
+            });
+
+            // Enable/Disable the button based on checkbox and fields
+            updateRunTestsButton();
+         }
+
+         // Check if all required fields are filled
+         function updateRunTestsButton() {
+            const runTestsButton = document.getElementById('runTestsButton');
+            const isAllFieldsFilled = Array.from(document.querySelectorAll('.input-field')).every(input => input.value.trim() !== '' || !input.required);
+            runTestsButton.disabled = !(isAllFieldsFilled || document.getElementById('runAllTests').checked);
+         }
+
+         // Event listener for field changes
+         document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('input', updateRunTestsButton);
+         });
+
+         // Fetch test results
+         async function fetchSummary() {
+            document.getElementById('fetchResultsButton').disabled = true;
+            try {
+                const response = await axios.get(`${GITHUB_API_BASE}/repos/${OWNER}/${REPO}/actions/runs`, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+
+                const latestRun = response.data.workflow_runs[0];
+                if (!latestRun) return updateTable([]);
+
+                const artifactResponse = await axios.get(`${GITHUB_API_BASE}/repos/${OWNER}/${REPO}/actions/runs/${latestRun.id}/artifacts`, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+
+                const summaryArtifact = artifactResponse.data.artifacts.find(a => a.name === 'test-summary-all-groups');
+                if (summaryArtifact) {
+                    const zipResponse = await axios.get(summaryArtifact.archive_download_url, {
+                        headers: { 'Authorization': `token ${GITHUB_TOKEN}` },
+                        responseType: 'blob'
+                    });
+
+                    const zip = await JSZip.loadAsync(zipResponse.data);
+                    const textFileName = Object.keys(zip.files).find(name => name.endsWith('.txt'));
+                    if (textFileName) {
+                        const textContent = await zip.files[textFileName].async("text");
+                        updateTable(parseTextToTableData(textContent));
+                    } else {
+                        updateTable([]);
+                    }
+                } else {
+                    updateTable([]);
+                }
+
+                updateArtifactLinksTable(artifactResponse.data.artifacts, latestRun.id);
+            } catch (error) {
+                console.error("Error fetching summary:", error);
+                updateTable([]);
+                showAlert("Error fetching summary", "error");
+            } finally {
+                document.getElementById('fetchResultsButton').disabled = false;
+            }
+         }
+
+         function updateArtifactLinksTable(artifacts, runId) {
+            const tableBody = document.querySelector("#artifactLinksTable tbody");
+            tableBody.innerHTML = artifacts.length ? artifacts.map(artifact => `
+                <tr>
+                    <td>${artifact.name}</td>
+                    <td>
+                        <a href="https://github.com/${OWNER}/${REPO}/actions/runs/${runId}/artifacts/${artifact.id}" target="_blank">
+                            <i class="fas fa-download text-blue-500 hover:text-blue-700"></i>
+                        </a>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="2" class="text-center">No reports available</td></tr>';
+         }
+
+         function parseTextToTableData(text) {
+            return text.trim().split("\n").slice(1).map(line => {
+                const columns = line.split(",").map(col => col.trim());
+                return columns.length === 5 ? {
+                    groupUser: columns[0],
+                    total: columns[1],
+                    passed: columns[2],
+                    failed: columns[3],
+                    skipped: columns[4]
+                } : null;
+            }).filter(row => row);
+         }
+
+         function updateTable(data) {
+            const tableBody = document.querySelector("#testSummaryTable tbody");
+            tableBody.innerHTML = data.length ? data.map(row => `
+                <tr>
+                    <td>${row.groupUser}</td>
+                    <td>${row.total}</td>
+                    <td class="text-green-600 font-bold">${row.passed}</td>
+                    <td class="text-red-600 font-bold">${row.failed}</td>
+                    <td class="text-yellow-600 font-bold">${row.skipped}</td>
+                </tr>
+            `).join('') : '<tr><td colspan="5" class="text-center">No data available</td></tr>';
+         }
+
+         document.getElementById('fetchResultsButton').addEventListener('click', fetchSummary);
+
+         document.getElementById('runTestsButton').addEventListener('click', async () => {
+            document.getElementById('runTestsButton').disabled = true;
+            try {
+                await axios.post(`${GITHUB_API_BASE}/repos/${OWNER}/${REPO}/actions/workflows/main.yml/dispatches`, {
+                    ref: BRANCH,
+                    inputs: {
+                        GROUP_CODE: document.getElementById('GROUP_CODE').value,
+                        URL: document.getElementById('URL').value,
+                        USERNAME: document.getElementById('USERNAME').value,
+                        PASSWORD: document.getElementById('PASSWORD').value,
+                        LOGGEDINUSER: document.getElementById('LOGGEDINUSER').value,
+                        TAG: document.getElementById('TAG').value,
+                    }
+                }, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                showAlert("Test run triggered successfully!", "success");
+            } catch (error) {
+                console.error("Error triggering tests:", error);
+                showAlert("Error triggering tests", "error");
+            } finally {
+                document.getElementById('runTestsButton').disabled = false;
+            }
+         });
+
+         function showAlert(message, type) {
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            alertMessage.classList.remove('success', 'error');
+            alertMessage.classList.add(type);
+            alertMessage.style.display = 'block';
+            setTimeout(() => alertMessage.style.display = 'none', 5000);
+         }
+    </script>
+
+
+
+            <script></script>
+        
+    
+</body>
